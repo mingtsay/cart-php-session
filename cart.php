@@ -40,47 +40,61 @@ $total = 0;
             </div>
         </div>
     </div>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">商品編號</th>
-                <th scope="col">商品名稱</th>
-                <th scope="col">商品價格</th>
-                <th scope="col">購買數量</th>
-                <th scope="col">價格小計</th>
-                <th scope="col">購物車功能</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if (empty($_SESSION['cart'])): ?>
-            <tr>
-                <td colspan="5">您的購物車尚無任何商品，請至<a href="products.php">商品列表</a>挑選商品。</td>
-            </tr>
-        <?php else: ?>
-        <?php   foreach ($_SESSION['cart'] as $product): ?>
-            <?php $total += ($price = (int) $product['price'] * (int) $product['quantity']); ?>
-            <tr>
-                <td><?php echo($product['id']) ?></td>
-                <td><?php echo($product['name']) ?></td>
-                <td>NT$<?php echo(number_format($product['price'])) ?></td>
-                <td><?php echo($product['quantity']) ?></td>
-                <td>NT$<?php echo(number_format($price)) ?></td>
-                <td>
-                    <a href="edit.php?id=<?php echo($product['id']) ?>" class="btn btn-primary btn-sm">修改數量</a>
-                    <a href="remove.php?id=<?php echo($product['id']) ?>" class="btn btn-danger btn-sm">移除</a>
-                </td>
-            </tr>
-        <?php   endforeach ?>
-        <?php endif ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="6" class="text-right">
-                    價格總計 NT$<?php echo(number_format($total)) ?>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+    <form action="checkout.php" method="POST">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">商品編號</th>
+                    <th scope="col">商品名稱</th>
+                    <th scope="col">商品價格</th>
+                    <th scope="col">購買數量</th>
+                    <th scope="col">價格小計</th>
+                    <th scope="col">購物車功能</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if (empty($_SESSION['cart'])): ?>
+                <tr>
+                    <td colspan="5">您的購物車尚無任何商品，請至<a href="products.php">商品列表</a>挑選商品。</td>
+                </tr>
+            <?php else: ?>
+            <?php   foreach ($_SESSION['cart'] as $product): ?>
+                <?php $total += ($price = (int) $product['price'] * (int) $product['quantity']); ?>
+                <tr>
+                    <td>
+                        <?php echo($product['id']) ?>
+                        <input type="hidden" name="id[]" value="<?php echo($product['id']) ?>"/>
+                    </td>
+                    <td><?php echo($product['name']) ?></td>
+                    <td>NT$<?php echo(number_format($product['price'])) ?></td>
+                    <td>
+                        <?php echo($product['quantity']) ?>
+                        <input type="hidden" name="quantity[]" value="<?php echo($product['id']) ?>"/>
+                    </td>
+                    <td>NT$<?php echo(number_format($price)) ?></td>
+                    <td>
+                        <a href="edit.php?id=<?php echo($product['id']) ?>" class="btn btn-primary btn-sm">修改數量</a>
+                        <a href="remove.php?id=<?php echo($product['id']) ?>" class="btn btn-danger btn-sm">移除</a>
+                    </td>
+                </tr>
+            <?php   endforeach ?>
+            <?php endif ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        價格總計 NT$<?php echo(number_format($total)) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        <a href="products.php" class="btn btn-secondary btn-sm">繼續選購</a>
+                        <button type="submit" class="btn btn-primary btn-sm">送出訂單</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
     <footer id="footer">
         <div class="row">
             <div class="col-lg-12">
